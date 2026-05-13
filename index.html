@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hemant—Meena</title>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Syne:wght@400;600;700;800&family=Syne+Mono&display=swap" rel="stylesheet">
+<script>
+  // Immediate check to prevent "white flash" on page load
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  }
+</script>
 <style>
 /* ─── Tokens ─────────────────────────────────────────── */
 :root {
@@ -20,14 +27,31 @@
   --green:     #16a34a;
   --border:    #e4e1d9;
   --border2:   #cdc9bf;
+  --nav-bg:    rgba(246,244,239,0.88);
   --nav-h:     64px;
   --sidebar-w: 280px;
   --radius:    14px;
   --radius-sm: 8px;
 }
 
+[data-theme="dark"] {
+  --bg:        #121212;
+  --surface:   #1e1e1e;
+  --surface2:  #2a2a2a;
+  --ink:       #e4e4e7;
+  --ink2:      #a1a1aa;
+  --ink3:      #71717a;
+  --accent:    #60a5fa;
+  --accent2:   rgba(96, 165, 250, 0.15);
+  --warm:      #fb923c;
+  --green:     #4ade80;
+  --border:    #333333;
+  --border2:   #444444;
+  --nav-bg:    rgba(18,18,18,0.88);
+}
+
 /* ─── Reset ──────────────────────────────────────────── */
-*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; }
 html { scroll-behavior: smooth; font-size: 16px; }
 body {
   background: var(--bg);
@@ -45,7 +69,7 @@ a { text-decoration: none; color: inherit; }
   top: 0; left: 0; right: 0;
   z-index: 900;
   height: var(--nav-h);
-  background: rgba(246,244,239,0.88);
+  background: var(--nav-bg);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
@@ -111,6 +135,25 @@ a { text-decoration: none; color: inherit; }
   box-shadow: 0 4px 16px rgba(29,78,216,0.3);
 }
 .btn-download svg { width: 13px; height: 13px; }
+
+/* Theme Toggle */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--ink);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.theme-toggle:hover { background: var(--accent2); border-color: var(--accent); color: var(--accent); }
+.theme-toggle svg { width: 18px; height: 18px; }
+.theme-toggle .sun-icon { display: none; }
+[data-theme="dark"] .theme-toggle .sun-icon { display: block; }
+[data-theme="dark"] .theme-toggle .moon-icon { display: none; }
 
 /* Hamburger */
 .hamburger {
@@ -650,6 +693,14 @@ section.visible { opacity: 1; transform: translateY(0); }
 .icon-cloud  { background: #fff7ed; border-color: #fed7aa; }
 .icon-tools  { background: #f0f9ff; border-color: #bae6fd; }
 
+/* Dark mode icon adjustments */
+[data-theme="dark"] .icon-lang, [data-theme="dark"] .icon-ai, 
+[data-theme="dark"] .icon-web, [data-theme="dark"] .icon-db, 
+[data-theme="dark"] .icon-cloud, [data-theme="dark"] .icon-tools {
+  background: var(--surface2);
+  border-color: var(--border);
+}
+
 /* ─── Education ──────────────────────────────────────── */
 .edu-row {
   display: flex;
@@ -807,7 +858,7 @@ section:nth-child(7) { transition-delay: 0.35s; }
 
 <!-- ── Navbar ─────────────────────────────────── -->
 <nav id="navbar">
-  <div class="nav-logo">H<span></span>M</div>
+  <div class="nav-logo">H<span>&</span>M</div>
   <ul class="nav-links">
     <li><a href="#education">Education</a></li>
     <li><a href="#experience">Experience</a></li>
@@ -816,6 +867,10 @@ section:nth-child(7) { transition-delay: 0.35s; }
     <li><a href="#achievements">Achievements</a></li>
   </ul>
   <div class="nav-right">
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+      <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
     <a href="resume_new.pdf" download class="btn-download">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
     <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
@@ -889,10 +944,8 @@ section:nth-child(7) { transition-delay: 0.35s; }
       <h1 class="hero-name">Hemant</h1>
       <p class="hero-role">Student at ABV-IIITM Gwalior</p>
       <p class="hero-intro">
-        <p class="hero-intro">
   Passionate about Data Structures & Algorithms, Full-Stack Development, and AI/ML. 
   Currently pursuing Integrated B.Tech and M.Tech at ABV-IIITM Gwalior, with experience building scalable web applications, real-time AI systems, and computer vision projects using modern technologies.
-</p>
       </p>
       <div class="hero-chips">
         <span class="hero-chip">⚔️ LeetCode Knight 1850</span>
@@ -1345,6 +1398,19 @@ document.querySelectorAll('section').forEach(s => {
 function toggleSkill(header) {
   header.closest('.skill-row').classList.toggle('expanded');
 }
+
+// ── Dark Mode Toggle Logic ─────────────────────────────
+const themeToggle = document.getElementById('theme-toggle');
+themeToggle.addEventListener('click', () => {
+  const isDark = document.documentElement.hasAttribute('data-theme');
+  if (isDark) {
+    document.documentElement.removeAttribute('data-theme');
+    localStorage.setItem('theme', 'light');
+  } else {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    localStorage.setItem('theme', 'dark');
+  }
+});
 </script>
 </body>
 </html>
